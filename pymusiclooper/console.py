@@ -10,6 +10,7 @@ _loop_options = [
     "--min-loop-duration",
     "--max-loop-duration",
     "--approx-loop-position",
+    "--loop-position-limits",
     "--brute-force",
     "--disable-pruning",
 ]

@@ -23,6 +23,7 @@ class LoopHandler:
         min_loop_duration: Optional[float] = None,
         max_loop_duration: Optional[float] = None,
         approx_loop_position: Optional[tuple] = None,
+        loop_position_limits: Optional[tuple] = None,
         brute_force: bool = False,
         disable_pruning: bool = False,
         _progressbar: Progress = None,
@@ -35,6 +36,13 @@ class LoopHandler:
             self.approx_loop_start = None
             self.approx_loop_end = None
 
+        if loop_position_limits is not None:
+            self.loop_start_limit = loop_position_limits[0]
+            self.loop_end_limit = loop_position_limits[1]
+        else:
+            self.loop_start_limit = None
+            self.loop_end_limit = None
+
         self.filepath = path
         self._musiclooper = MusicLooper(filepath=path)
 
@@ -46,6 +54,8 @@ class LoopHandler:
             max_loop_duration=max_loop_duration,
             approx_loop_start=self.approx_loop_start,
             approx_loop_end=self.approx_loop_end,
+            loop_start_limit=self.loop_start_limit,
+            loop_end_limit=self.loop_end_limit,
             brute_force=brute_force,
             disable_pruning=disable_pruning,
         )
@@ -186,6 +196,7 @@ class LoopExportHandler(LoopHandler):
         min_loop_duration: Optional[float] = None,
         max_loop_duration: Optional[float] = None,
         approx_loop_position: Optional[tuple] = None,
+        loop_position_limits: Optional[tuple] = None,
         brute_force: bool = False,
         disable_pruning: bool = False,
         split_audio: bool = False,
@@ -208,6 +219,7 @@ class LoopExportHandler(LoopHandler):
             min_loop_duration=min_loop_duration,
             max_loop_duration=max_loop_duration,
             approx_loop_position=approx_loop_position,
+            loop_position_limits=loop_position_limits,
             brute_force=brute_force,
             disable_pruning=disable_pruning,
             **kwargs,

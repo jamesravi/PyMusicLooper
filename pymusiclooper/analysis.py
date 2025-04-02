@@ -38,6 +38,8 @@ def find_best_loop_points(
     max_loop_duration: Optional[float] = None,
     approx_loop_start: Optional[float] = None,
     approx_loop_end: Optional[float] = None,
+    loop_start_limit: Optional[float] = None,
+    loop_end_limit: Optional[float] = None,
     brute_force: bool = False,
     disable_pruning: bool = False,
 ) -> List[LoopPair]:
@@ -50,6 +52,8 @@ def find_best_loop_points(
         max_loop_duration (float, optional): The maximum duration of a loop (in seconds). Defaults to None.
         approx_loop_start (float, optional): The approximate location of the desired loop start (in seconds). If specified, must specify approx_loop_end as well. Defaults to None.
         approx_loop_end (float, optional): The approximate location of the desired loop end (in seconds). If specified, must specify approx_loop_start as well. Defaults to None.
+        loop_start_limit (float, optional): The lower limit in which loop start will be searched (in seconds). If specified, must specify loop_end_limit as well. Defaults to None.
+        loop_end_limit (float, optional): The upper limit in which loop end will be searched (in seconds). If specified, must specify loop_start_limit as well. Defaults to None.
         brute_force (bool, optional): Checks the entire track instead of the detected beats (disclaimer: runtime may be significantly longer). Defaults to False.
         disable_pruning (bool, optional): Returns all the candidate loop points without filtering. Defaults to False.
     Raises:
@@ -210,7 +214,20 @@ def find_best_loop_points(
         f"Total analysis runtime: {time.perf_counter() - runtime_start:.3f}s"
     )
 
-    return filtered_candidate_pairs
+    if loop_start_limit is not None and loop_end_limit is not None:
+        actual_filtered_candidate_pairs = []
+        for pair in filtered_candidate_pairs:
+            pair_start, pair_end = mlaudio.samples_to_seconds(pair.loop_start), mlaudio.samples_to_seconds(pair.loop_end)
+            if (loop_start_limit <= pair_start <= loop_end_limit) and (loop_start_limit <= pair_end <= loop_end_limit):
+                actual_filtered_candidate_pairs.append(pair)
+        if not actual_filtered_candidate_pairs:
+            raise LoopNotFoundError(
+                f"No loop points found for {mlaudio.filename} with current parameters."
+            )
+        return actual_filtered_candidate_pairs
+    
+    else:
+        return filtered_candidate_pairs
 
 
 def _analyze_audio(

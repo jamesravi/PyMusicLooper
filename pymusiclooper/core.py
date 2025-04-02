@@ -33,6 +33,8 @@ class MusicLooper:
         max_loop_duration: Optional[float] = None,
         approx_loop_start: Optional[float] = None,
         approx_loop_end: Optional[float] = None,
+        loop_start_limit: Optional[float] = None,
+        loop_end_limit: Optional[float] = None,
         brute_force: bool = False,
         disable_pruning: bool = False,
     ) -> List[LoopPair]:
@@ -44,6 +46,8 @@ class MusicLooper:
             max_loop_duration (float, optional): The maximum duration of a loop (in seconds). Defaults to None.
             approx_loop_start (float, optional): The approximate location of the desired loop start (in seconds). If specified, must specify approx_loop_end as well. Defaults to None.
             approx_loop_end (float, optional): The approximate location of the desired loop end (in seconds). If specified, must specify approx_loop_start as well. Defaults to None.
+            loop_start_limit (float, optional): The lower limit in which loop start will be searched (in seconds). If specified, must specify loop_end_limit as well. Defaults to None.
+            loop_end_limit (float, optional): The upper limit in which loop end will be searched (in seconds). If specified, must specify loop_start_limit as well. Defaults to None.
             brute_force (bool, optional): Checks the entire track instead of the detected beats (disclaimer: runtime may be significantly longer). Defaults to False.
             disable_pruning (bool, optional): Returns all the candidate loop points without filtering. Defaults to False.
         
@@ -60,6 +64,8 @@ class MusicLooper:
             max_loop_duration=max_loop_duration,
             approx_loop_start=approx_loop_start,
             approx_loop_end=approx_loop_end,
+            loop_start_limit=loop_start_limit,
+            loop_end_limit=loop_end_limit,
             brute_force=brute_force,
             disable_pruning=disable_pruning
         )
